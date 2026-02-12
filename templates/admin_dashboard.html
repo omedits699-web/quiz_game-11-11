@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Quiz Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 15px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon.questions {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .stat-icon.users {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .stat-icon.attempts {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .stat-icon.score {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 0.875rem;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .log-entry {
+            padding: 10px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .settings-group {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .medal {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 60px;
+            font-size: 1.5rem;
+            margin: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .medal.gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+        }
+
+        .medal.silver {
+            background: linear-gradient(135deg, #C0C0C0, #808080);
+            color: white;
+        }
+
+        .medal.bronze {
+            background: linear-gradient(135deg, #CD7F32, #8B4513);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="bi bi-shield-check"></i> Admin Panel</h3>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active" onclick="showSection('dashboard')">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('questions')">
+                <i class="bi bi-question-circle"></i> Questions
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('leaderboard')">
+                <i class="bi bi-trophy"></i> Leaderboard
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('medals')">
+                <i class="bi bi-award"></i> Medals
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('users')">
+                <i class="bi bi-people"></i> Users
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('analytics')">
+                <i class="bi bi-graph-up"></i> Analytics
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('settings')">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('logs')">
+                <i class="bi bi-file-text"></i> Logs
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('backup')">
+                <i class="bi bi-cloud-download"></i> Backup
+            </a>
+            <a href="/admin/logout" class="menu-item" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div>
+                <h4 class="mb-0">Welcome to Admin Dashboard</h4>
+                <small class="text-muted">Manage your quiz system efficiently</small>
+            </div>
+            <div>
+                <span class="badge bg-success">Admin Online</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <h2 class="mb-4">Admin Dashboard</h2>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon questions">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+                        <div class="stat-value" id="totalQuestions">0</div>
+                        <div class="stat-label">Total Questions</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon attempts">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="stat-value" id="totalAttempts">0</div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon score">
+                            <i class="bi bi-percent"></i>
+                        </div>
+                        <div class="stat-value" id="avgScore">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="table-container mt-4">
+                <h5 class="mb-3">Recent Activity</h5>
+                <div id="recentActivity">
+                    <p class="text-muted">Loading recent activity...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Section -->
+        <div id="questions" class="content-section">
+            <h2 class="mb-4">Question Management</h2>
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>All Questions</h5>
+                    <button class="btn btn-primary" onclick="showAddQuestionModal()">
+                        <i class="bi bi-plus-circle"></i> Add Question
+                    </button>
+                </div>
+                <div id="questionsList">
+                    <p class="text-muted">Loading questions...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div id="leaderboard" class="content-section">
+            <h2 class="mb-4">Leaderboard Management</h2>
+            <div class="table-container">
+                <h5 class="mb-3">Top Performers</h5>
+                <div id="leaderboardData">
+                    <p class="text-muted">Loading leaderboard data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medals Section -->
+        <div id="medals" class="content-section">
+            <h2 class="mb-4">Medals & Achievements</h2>
+            <div class="table-container">
+                <h5 class="mb-3">Available Medals</h5>
+                <div class="text-center">
+                    <div class="medal gold"><i class="bi bi-trophy-fill"></i></div>
+                    <div class="medal silver"><i class="bi bi-trophy-fill"></i></div>
+                    <div class="medal bronze"><i class="bi bi-trophy-fill"></i></div>
+                </div>
+                <p class="text-center mt-3">Gold: 90-100% | Silver: 75-89% | Bronze: 60-74%</p>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="content-section">
+            <h2 class="mb-4">User Management</h2>
+            <div class="table-container">
+                <h5 class="mb-3">All Users</h5>
+                <div id="usersList">
+                    <p class="text-muted">Loading users...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics" class="content-section">
+            <h2 class="mb-4">Analytics & Reports</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h5>Quiz Performance Trends</h5>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h5>User Activity</h5>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="content-section">
+            <h2 class="mb-4">System Settings</h2>
+            <div class="settings-group">
+                <h5>Quiz Configuration</h5>
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Questions per Quiz</label>
+                        <input type="number" class="form-control" value="10">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Time Limit (minutes)</label>
+                        <input type="number" class="form-control" value="30">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Passing Score (%)</label>
+                        <input type="number" class="form-control" value="60">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div id="logs" class="content-section">
+            <h2 class="mb-4">System Logs</h2>
+            <div class="table-container">
+                <h5 class="mb-3">Recent Logs</h5>
+                <div id="logsList">
+                    <div class="log-entry">
+                        <strong>2024-01-15 10:30:45</strong> - User quiz completed successfully
+                    </div>
+                    <div class="log-entry">
+                        <strong>2024-01-15 10:25:12</strong> - New question added by admin
+                    </div>
+                    <div class="log-entry">
+                        <strong>2024-01-15 10:20:08</strong> - User login: john_doe
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Section -->
+        <div id="backup" class="content-section">
+            <h2 class="mb-4">Backup & Restore</h2>
+            <div class="table-container">
+                <h5 class="mb-3">Data Backup</h5>
+                <p>Create backups of your quiz data including questions, scores, and user information.</p>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-primary" onclick="createBackup()">
+                        <i class="bi bi-download"></i> Create Backup
+                    </button>
+                    <button class="btn btn-secondary" onclick="restoreBackup()">
+                        <i class="bi bi-upload"></i> Restore Backup
+                    </button>
+                </div>
+                <hr>
+                <h6>Export Options:</h6>
+                <div class="d-flex gap-2">
+                    <a href="/api/admin/export?type=scores" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-file-csv"></i> Export Scores
+                    </a>
+                    <a href="/api/admin/export?type=questions" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-file-csv"></i> Export Questions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load section-specific data
+            loadSectionData(sectionId);
+        }
+
+        // Load section data
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'questions':
+                    loadQuestions();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'leaderboard':
+                    loadLeaderboard();
+                    break;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const data = await response.json();
+                
+                document.getElementById('totalQuestions').textContent = data.total_questions;
+                document.getElementById('totalUsers').textContent = data.total_users;
+                document.getElementById('totalAttempts').textContent = data.total_attempts;
+                document.getElementById('avgScore').textContent = data.avg_score + '%';
+                
+                // Load recent activity
+                const activityHtml = data.recent_activity.map(activity => `
+                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                        <div>
+                            <strong>${activity.username}</strong>
+                            <small class="text-muted d-block">Score: ${activity.score}/${activity.total}</small>
+                        </div>
+                        <small class="text-muted">${new Date(activity.date).toLocaleString()}</small>
+                    </div>
+                `).join('');
+                
+                document.getElementById('recentActivity').innerHTML = activityHtml || '<p class="text-muted">No recent activity</p>';
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Load questions
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/api/admin/questions');
+                const data = await response.json();
+                
+                const questionsHtml = data.questions.map(q => `
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <div>
+                            <strong>Q${q.id}:</strong> ${q.question}
+                            <small class="text-muted d-block">Difficulty: ${q.difficulty}</small>
+                        </div>
+                        <div>
+                            <button class="btn-action btn-edit" onclick="editQuestion(${q.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteQuestion(${q.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('questionsList').innerHTML = questionsHtml || '<p class="text-muted">No questions found</p>';
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const data = await response.json();
+                
+                const usersHtml = data.users.map(user => `
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <div>
+                            <strong>${user.username}</strong>
+                            <small class="text-muted d-block">
+                                Quizzes: ${user.total_quizzes} | Best: ${user.best_score} | Avg: ${user.avg_accuracy}%
+                            </small>
+                        </div>
+                        <small class="text-muted">Last: ${new Date(user.last_activity).toLocaleDateString()}</small>
+                    </div>
+                `).join('');
+                
+                document.getElementById('usersList').innerHTML = usersHtml || '<p class="text-muted">No users found</p>';
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Load leaderboard
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch('/api/leaderboard?limit=20');
+                const data = await response.json();
+                
+                const leaderboardHtml = data.leaderboard.map(entry => `
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary me-3">#${entry.rank}</span>
+                            <strong>${entry.username}</strong>
+                        </div>
+                        <div>
+                            <span class="badge bg-success me-2">${entry.score}/${entry.total}</span>
+                            <span class="badge bg-info">${entry.percentage}%</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('leaderboardData').innerHTML = leaderboardHtml || '<p class="text-muted">No leaderboard data</p>';
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        // Question management functions
+        function showAddQuestionModal() {
+            alert('Add Question Modal - To be implemented');
+        }
+
+        function editQuestion(id) {
+            alert('Edit Question ID: ' + id);
+        }
+
+        function deleteQuestion(id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                alert('Delete Question ID: ' + id);
+            }
+        }
+
+        // Backup functions
+        function createBackup() {
+            alert('Creating backup... (Feature to be implemented)');
+        }
+
+        function restoreBackup() {
+            alert('Restore backup... (Feature to be implemented)');
+        }
+
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+    </script>
+</body>
+</html>

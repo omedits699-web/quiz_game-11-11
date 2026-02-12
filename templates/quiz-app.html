@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#00f2ff">
+    <title>QuizVerse Ultimate</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body{
+            font-family:'Orbitron',sans-serif;
+            background:radial-gradient(circle at top,#020024,#090979,#00d4ff);
+            color:#fff;
+            min-height:100vh;
+        }
+        .glass{
+            background:rgba(255,255,255,.12);
+            backdrop-filter:blur(14px);
+            border-radius:18px;
+            box-shadow:0 20px 40px rgba(0,0,0,.4);
+        }
+        .glass-card{
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(16px);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .animate-fade{
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn{
+            from{opacity:0; transform:translateY(15px)}
+            to{opacity:1; transform:translateY(0)}
+        }
+        .form-control,
+        .form-select{
+            background: rgba(0,0,0,0.4);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-control:focus,
+        .form-select:focus{
+            background: rgba(0,0,0,0.6);
+            color: white;
+        }
+        label{
+            color: #ccc;
+        }
+        .timer{
+            color: #ff5252;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .quiz-card{
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .btn-option:hover{
+            background: rgba(0,242,255,0.3) !important;
+            border-color: #00f2ff !important;
+        }
+        .btn-option.correct{
+            background: rgba(76,175,80,0.5) !important;
+            border-color: #4caf50 !important;
+        }
+        .btn-option.incorrect{
+            background: rgba(244,67,54,0.5) !important;
+            border-color: #f44336 !important;
+        }
+        .hidden{
+            display: none !important;
+        }
+        footer{opacity:.7;font-size:14px}
+    </style>
+</head>
+
+<body>
+
+<div id="loader">
+    <div class="loader-ring"></div>
+</div>
+
+<div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+    <i class="bi bi-moon-fill" id="themeIcon"></i>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark glass px-4">
+    <a class="navbar-brand fw-bold" href="#" onclick="showHome()">⚡ QuizVerse</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="#" onclick="showHome()">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="showLeaderboard()">Leaderboard</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main class="container py-4">
+    <div class="glass p-4">
+        
+        <!-- Home Page -->
+        <div id="homePage" class="page">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg text-center p-4 glass-card animate-fade">
+                        <h1 class="mb-2 fw-bold">🎮 QUIZ MASTER</h1>
+                        <p class="text-muted mb-4">Test your knowledge like a game</p>
+                        
+                        <form id="startForm">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="username" name="user" placeholder="Your Name" required>
+                                <label for="username">👤 Player Name</label>
+                            </div>
+                            
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="all">🌟 All Categories</option>
+                                    <option value="science">🔬 Science</option>
+                                    <option value="history">📚 History</option>
+                                    <option value="geography">🌍 Geography</option>
+                                    <option value="sports">⚽ Sports</option>
+                                    <option value="entertainment">🎬 Entertainment</option>
+                                </select>
+                                <label for="category">📂 Category</label>
+                            </div>
+                            
+                            <div class="form-floating mb-4">
+                                <select class="form-select" id="difficulty" name="diff" required>
+                                    <option value="easy">🟢 Easy</option>
+                                    <option value="medium">🟡 Medium</option>
+                                    <option value="hard">🔴 Hard</option>
+                                </select>
+                                <label for="difficulty">🎯 Difficulty Level</label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                                ▶ Start Quiz
+                            </button>
+                        </form>
+                        
+                        <div class="mt-3 mb-3">
+                            <h6>🏆 Your Achievements</h6>
+                            <div id="userAchievements">
+                                <!-- Achievements will be displayed here -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 d-flex justify-content-between small">
+                            <a href="#" class="text-info text-decoration-none" onclick="showLeaderboard()">
+                                📊 Leaderboard
+                            </a>
+                            <a href="#" class="text-warning text-decoration-none" onclick="showStatistics()">
+                                📈 Statistics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Page -->
+        <div id="quizPage" class="page hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="quiz-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-info">Question <span id="questionNumber">1</span> of <span id="totalQuestions">10</span></span>
+                            <div class="timer" id="timer">⏱ 15</div>
+                        </div>
+                        
+                        <h4 class="mb-4" id="questionText">Loading question...</h4>
+                        
+                        <form id="quizForm">
+                            <div id="optionsContainer">
+                                <!-- Options will be dynamically added here -->
+                            </div>
+                        </form>
+                        
+                        <div class="mt-3">
+                            <div class="progress">
+                                <div class="progress-bar bg-info" id="progressBar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Page -->
+        <div id="resultPage" class="page hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg text-center p-4 glass-card animate-fade">
+                        <h2 class="mb-3">🎉 Quiz Complete!</h2>
+                        <div class="mb-4">
+                            <h3 class="text-warning" id="finalScore">8/10</h3>
+                            <p class="text-muted">Your Score</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p><strong>Player:</strong> <span id="resultUser">Player</span></p>
+                            <p><strong>Time:</strong> <span id="resultTime">2:30</span></p>
+                            <p><strong>Difficulty:</strong> <span id="resultDifficulty">Medium</span></p>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-warning" onclick="showHome()">
+                                🏠 Play Again
+                            </button>
+                            <button class="btn btn-info" onclick="showLeaderboard()">
+                                📊 View Leaderboard
+                            </button>
+                            <button class="btn btn-success" onclick="downloadCertificate()">
+                                📜 Download Certificate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Page -->
+        <div id="statisticsPage" class="page hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg p-4 glass-card animate-fade">
+                        <h2 class="text-center mb-4">📈 Your Statistics</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="text-center mb-3">
+                                    <h4 class="text-warning" id="totalQuizzes">0</h4>
+                                    <p class="text-muted">Total Quizzes</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-center mb-3">
+                                    <h4 class="text-success" id="avgScore">0%</h4>
+                                    <p class="text-muted">Average Score</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-center mb-3">
+                                    <h4 class="text-info" id="bestScore">0</h4>
+                                    <p class="text-muted">Best Score</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-center mb-3">
+                                    <h4 class="text-danger" id="totalTime">0m</h4>
+                                    <p class="text-muted">Total Time</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <button class="btn btn-warning" onclick="showHome()">
+                                🏠 Back to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Page -->
+        <div id="leaderboardPage" class="page hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg p-4 glass-card animate-fade">
+                        <h2 class="text-center mb-4">🏆 Leaderboard</h2>
+                        
+                        <div class="mb-3">
+                            <select class="form-select" id="leaderboardFilter" onchange="updateLeaderboard()">
+                                <option value="all">All Difficulties</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Player</th>
+                                        <th>Score</th>
+                                        <th>Difficulty</th>
+                                        <th>Time</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboardBody">
+                                    <!-- Leaderboard entries will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <button class="btn btn-warning" onclick="showHome()">
+                                🏠 Back to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="text-center py-3">
+    © 2026 QuizVerse
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Quiz Data
+const quizData = {
+    easy: {
+        science: [
+            {
+                question: "What is H2O?",
+                options: ["Oxygen", "Hydrogen", "Water", "Carbon"],
+                correct: 2,
+                explanation: "H2O is the chemical formula for water"
+            },
+            {
+                question: "What planet is closest to the Sun?",
+                options: ["Venus", "Mercury", "Earth", "Mars"],
+                correct: 1,
+                explanation: "Mercury is the closest planet to the Sun"
+            },
+            {
+                question: "How many bones are in the human body?",
+                options: ["106", "206", "306", "406"],
+                correct: 1,
+                explanation: "An adult human has 206 bones"
+            }
+        ],
+        history: [
+            {
+                question: "Who was the first President of the United States?",
+                options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "John Adams"],
+                correct: 1,
+                explanation: "George Washington was the first US President"
+            },
+            {
+                question: "In which year did Columbus discover America?",
+                options: ["1490", "1491", "1492", "1493"],
+                correct: 2,
+                explanation: "Christopher Columbus reached America in 1492"
+            },
+            {
+                question: "Which ancient wonder of the world still stands today?",
+                options: ["Colossus of Rhodes", "Lighthouse of Alexandria", "Great Pyramid of Giza", "Hanging Gardens"],
+                correct: 2,
+                explanation: "The Great Pyramid of Giza is the only ancient wonder still standing"
+            }
+        ],
+        geography: [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                correct: 2,
+                explanation: "Paris is the capital of France"
+            },
+            {
+                question: "Which ocean is the largest?",
+                options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+                correct: 3,
+                explanation: "The Pacific Ocean is the largest ocean"
+            },
+            {
+                question: "How many continents are there?",
+                options: ["5", "6", "7", "8"],
+                correct: 2,
+                explanation: "There are 7 continents: Asia, Africa, North America, South America, Antarctica, Europe, and Australia"
+            }
+        ],
+        sports: [
+            {
+                question: "How many players are on a basketball team?",
+                options: ["4", "5", "6", "7"],
+                correct: 1,
+                explanation: "A basketball team has 5 players on the court"
+            },
+            {
+                question: "In which sport would you perform a slam dunk?",
+                options: ["Tennis", "Basketball", "Soccer", "Golf"],
+                correct: 1,
+                explanation: "A slam dunk is a basketball move"
+            },
+            {
+                question: "How often are the Olympic Games held?",
+                options: ["Every 2 years", "Every 3 years", "Every 4 years", "Every 5 years"],
+                correct: 2,
+                explanation: "The Olympic Games are held every 4 years"
+            }
+        ],
+        entertainment: [
+            {
+                question: "Who directed the movie 'Jaws'?",
+                options: ["George Lucas", "Steven Spielberg", "Martin Scorsese", "Francis Ford Coppola"],
+                correct: 1,
+                explanation: "Steven Spielberg directed Jaws"
+            },
+            {
+                question: "What is the highest-grossing film of all time?",
+                options: ["Titanic", "Avatar", "Avengers: Endgame", "Star Wars"],
+                correct: 1,
+                explanation: "Avatar is the highest-grossing film worldwide"
+            },
+            {
+                question: "Who wrote 'Harry Potter'?",
+                options: ["J.R.R. Tolkien", "J.K. Rowling", "Stephen King", "George R.R. Martin"],
+                correct: 1,
+                explanation: "J.K. Rowling wrote the Harry Potter series"
+            }
+        ]
+    },
+    medium: {
+        science: [
+            {
+                question: "What is the speed of light?",
+                options: ["299,792 km/s", "199,792 km/s", "399,792 km/s", "99,792 km/s"],
+                correct: 0,
+                explanation: "The speed of light is approximately 299,792 km/s"
+            },
+            {
+                question: "What is the powerhouse of the cell?",
+                options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"],
+                correct: 1,
+                explanation: "Mitochondria are known as the powerhouse of the cell"
+            },
+            {
+                question: "What element has the atomic number 6?",
+                options: ["Oxygen", "Nitrogen", "Carbon", "Helium"],
+                correct: 2,
+                explanation: "Carbon has the atomic number 6"
+            }
+        ],
+        history: [
+            {
+                question: "When did the Roman Empire fall?",
+                options: ["476 AD", "1066 AD", "1453 AD", "1789 AD"],
+                correct: 0,
+                explanation: "The Western Roman Empire fell in 476 AD"
+            },
+            {
+                question: "Who wrote 'The Communist Manifesto'?",
+                options: ["Lenin", "Stalin", "Marx and Engels", "Mao"],
+                correct: 2,
+                explanation: "Karl Marx and Friedrich Engels wrote The Communist Manifesto"
+            },
+            {
+                question: "Which war was fought between the North and South in America?",
+                options: ["Revolutionary War", "Civil War", "War of 1812", "Spanish-American War"],
+                correct: 1,
+                explanation: "The American Civil War was fought between the North and South"
+            }
+        ],
+        geography: [
+            {
+                question: "What is the longest river in the world?",
+                options: ["Amazon", "Nile", "Mississippi", "Yangtze"],
+                correct: 1,
+                explanation: "The Nile River is generally considered the longest river in the world"
+            },
+            {
+                question: "Which country has the most time zones?",
+                options: ["Russia", "USA", "China", "France"],
+                correct: 3,
+                explanation: "France has the most time zones due to its overseas territories"
+            },
+            {
+                question: "What is the smallest country in the world?",
+                options: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"],
+                correct: 1,
+                explanation: "Vatican City is the smallest country in the world"
+            }
+        ],
+        sports: [
+            {
+                question: "How many minutes are in a professional soccer game?",
+                options: ["60", "70", "80", "90"],
+                correct: 3,
+                explanation: "A professional soccer game is 90 minutes long"
+            },
+            {
+                question: "In tennis, what is a score of zero called?",
+                options: ["Nil", "Zero", "Love", "Nothing"],
+                correct: 2,
+                explanation: "In tennis, a score of zero is called 'love'"
+            },
+            {
+                question: "Which country has won the most FIFA World Cups?",
+                options: ["Germany", "Argentina", "Brazil", "Italy"],
+                correct: 2,
+                explanation: "Brazil has won the most FIFA World Cups with 5 titles"
+            }
+        ],
+        entertainment: [
+            {
+                question: "Who composed the music for 'Star Wars'?",
+                options: ["John Williams", "Hans Zimmer", "Danny Elfman", "James Horner"],
+                correct: 0,
+                explanation: "John Williams composed the iconic music for Star Wars"
+            },
+            {
+                question: "Which TV show has the most episodes?",
+                options: ["The Simpsons", "Gunsmoke", "Law & Order", "Grey's Anatomy"],
+                correct: 1,
+                explanation: "Gunsmoke has the most episodes of any scripted prime-time series"
+            },
+            {
+                question: "Who painted 'The Persistence of Memory'?",
+                options: ["Salvador Dalí", "Pablo Picasso", "Vincent van Gogh", "Claude Monet"],
+                correct: 0,
+                explanation: "Salvador Dalí painted 'The Persistence of Memory'"
+            }
+        ]
+    },
+    hard: {
+        science: [
+            {
+                question: "What is the Heisenberg Uncertainty Principle about?",
+                options: ["Position and momentum", "Energy and time", "Both", "Neither"],
+                correct: 2,
+                explanation: "The Heisenberg Uncertainty Principle applies to both position-momentum and energy-time pairs"
+            },
+            {
+                question: "What is the molecular weight of glucose (C6H12O6)?",
+                options: ["180.16 g/mol", "150.16 g/mol", "200.16 g/mol", "120.16 g/mol"],
+                correct: 0,
+                explanation: "Glucose has a molecular weight of 180.16 g/mol"
+            },
+            {
+                question: "Which quantum number describes the shape of an orbital?",
+                options: ["Principal (n)", "Azimuthal (l)", "Magnetic (ml)", "Spin (ms)"],
+                correct: 1,
+                explanation: "The azimuthal quantum number (l) describes the shape of an orbital"
+            }
+        ],
+        history: [
+            {
+                question: "In what year was the Battle of Hastings?",
+                options: ["1065", "1066", "1067", "1068"],
+                correct: 1,
+                explanation: "The Battle of Hastings took place in 1066"
+            },
+            {
+                question: "Who was the first Emperor of Rome?",
+                options: ["Julius Caesar", "Augustus", "Nero", "Marcus Aurelius"],
+                correct: 1,
+                explanation: "Augustus was the first Emperor of Rome"
+            },
+            {
+                question: "Which treaty ended World War I?",
+                options: ["Treaty of Versailles", "Treaty of Paris", "Treaty of Westphalia", "Treaty of Ghent"],
+                correct: 0,
+                explanation: "The Treaty of Versailles ended World War I"
+            }
+        ],
+        geography: [
+            {
+                question: "What is the deepest point in the ocean?",
+                options: ["Java Trench", "Mariana Trench", "Puerto Rico Trench", "Tonga Trench"],
+                correct: 1,
+                explanation: "The Mariana Trench contains the deepest point in the ocean"
+            },
+            {
+                question: "Which desert is the largest in the world?",
+                options: ["Sahara", "Arabian", "Gobi", "Antarctica"],
+                correct: 3,
+                explanation: "Antarctica is the largest desert in the world"
+            },
+            {
+                question: "What is the capital of Bhutan?",
+                options: ["Thimphu", "Paro", "Punakha", "Gangtok"],
+                correct: 0,
+                explanation: "Thimphu is the capital of Bhutan"
+            }
+        ],
+        sports: [
+            {
+                question: "What is the maximum score in ten-pin bowling?",
+                options: ["200", "250", "300", "350"],
+                correct: 2,
+                explanation: "The maximum score in ten-pin bowling is 300 (12 strikes in a row)"
+            },
+            {
+                question: "In which year were women first allowed to compete in the Olympic Games?",
+                options: ["1896", "1900", "1904", "1908"],
+                correct: 1,
+                explanation: "Women first competed in the Olympics in 1900"
+            },
+            {
+                question: "What is the term for a perfect score in gymnastics?",
+                options: ["Golden", "Perfect 10", "Flawless", "Maximum"],
+                correct: 1,
+                explanation: "A perfect score in gymnastics is called a 'Perfect 10'"
+            }
+        ],
+        entertainment: [
+            {
+                question: "Who wrote 'One Hundred Years of Solitude'?",
+                options: ["Borges", "García Márquez", "Neruda", "Allende"],
+                correct: 1,
+                explanation: "Gabriel García Márquez wrote 'One Hundred Years of Solitude'"
+            },
+            {
+                question: "Which composer wrote 'The Rite of Spring'?",
+                options: ["Bach", "Mozart", "Stravinsky", "Beethoven"],
+                correct: 2,
+                explanation: "Igor Stravinsky composed 'The Rite of Spring'"
+            },
+            {
+                question: "What is the name of the fictional town in 'The Simpsons'?",
+                options: ["Springfield", "Shelbyville", "Ogdenville", "Capital City"],
+                correct: 0,
+                explanation: "The Simpsons takes place in Springfield"
+            }
+        ]
+    }
+};
+
+// Achievements System
+const achievements = {
+    firstQuiz: { name: "🎯 First Timer", description: "Complete your first quiz" },
+    perfectScore: { name: "⭐ Perfect Score", description: "Get 100% on any quiz" },
+    speedDemon: { name: "⚡ Speed Demon", description: "Complete a quiz in under 30 seconds" },
+    quizMaster: { name: "🏆 Quiz Master", description: "Complete 10 quizzes" },
+    scientist: { name: "🔬 Scientist", description: "Complete 5 science quizzes" },
+    historian: { name: "📚 Historian", description: "Complete 5 history quizzes" },
+    explorer: { name: "🌍 Explorer", description: "Complete 5 geography quizzes" },
+    athlete: { name: "⚽ Athlete", description: "Complete 5 sports quizzes" },
+    entertainer: { name: "🎬 Entertainer", description: "Complete 5 entertainment quizzes" },
+    hardMode: { name: "💪 Hard Mode", description: "Complete a hard difficulty quiz" }
+};
+
+// Game State
+let gameState = {
+    username: '',
+    difficulty: 'easy',
+    category: 'all',
+    currentQuestion: 0,
+    score: 0,
+    startTime: null,
+    timer: null,
+    timeLeft: 15,
+    questions: [],
+    answers: [],
+    userAchievements: JSON.parse(localStorage.getItem('userAchievements') || '{}'),
+    soundEnabled: JSON.parse(localStorage.getItem('soundEnabled') || 'true')
+};
+
+// Initialize
+window.onload = () => {
+    document.getElementById("loader").style.display = "none";
+    showHome();
+    loadLeaderboard();
+    displayAchievements();
+    loadTheme();
+};
+
+// Theme Toggle
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    
+    if (body.classList.contains('light-theme')) {
+        body.classList.remove('light-theme');
+        themeIcon.className = 'bi bi-moon-fill';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        body.classList.add('light-theme');
+        themeIcon.className = 'bi bi-sun-fill';
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+function loadTheme() {
+    const theme = localStorage.getItem('theme') || 'dark';
+    const themeIcon = document.getElementById('themeIcon');
+    
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.className = 'bi bi-sun-fill';
+    } else {
+        themeIcon.className = 'bi bi-moon-fill';
+    }
+}
+
+// Sound Effects
+function playSound(type) {
+    if (!gameState.soundEnabled) return;
+    
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    switch(type) {
+        case 'correct':
+            oscillator.frequency.value = 523.25; // C5
+            gainNode.gain.value = 0.3;
+            break;
+        case 'incorrect':
+            oscillator.frequency.value = 220; // A3
+            gainNode.gain.value = 0.2;
+            break;
+        case 'question':
+            oscillator.frequency.value = 440; // A4
+            gainNode.gain.value = 0.1;
+            break;
+        case 'complete':
+            oscillator.frequency.value = 659.25; // E5
+            gainNode.gain.value = 0.3;
+            break;
+    }
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Statistics
+function showStatistics() {
+    hideAllPages();
+    document.getElementById('statisticsPage').classList.remove('hidden');
+    updateStatistics();
+}
+
+function updateStatistics() {
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    const userScores = scores.filter(score => score.username === gameState.username);
+    
+    if (userScores.length === 0) {
+        document.getElementById('totalQuizzes').textContent = '0';
+        document.getElementById('avgScore').textContent = '0%';
+        document.getElementById('bestScore').textContent = '0';
+        document.getElementById('totalTime').textContent = '0m';
+        return;
+    }
+    
+    const totalQuizzes = userScores.length;
+    const avgScore = Math.round(userScores.reduce((sum, score) => sum + (score.score / score.total) * 100, 0) / totalQuizzes);
+    const bestScore = Math.max(...userScores.map(score => score.score));
+    const totalTime = Math.floor(userScores.reduce((sum, score) => sum + score.time, 0) / 60);
+    
+    document.getElementById('totalQuizzes').textContent = totalQuizzes;
+    document.getElementById('avgScore').textContent = `${avgScore}%`;
+    document.getElementById('bestScore').textContent = bestScore;
+    document.getElementById('totalTime').textContent = `${totalTime}m`;
+}
+
+// Page Navigation
+function showHome() {
+    hideAllPages();
+    document.getElementById('homePage').classList.remove('hidden');
+}
+
+function showQuiz() {
+    hideAllPages();
+    document.getElementById('quizPage').classList.remove('hidden');
+    startQuiz();
+}
+
+function showResult() {
+    hideAllPages();
+    document.getElementById('resultPage').classList.remove('hidden');
+    displayResults();
+}
+
+function showLeaderboard() {
+    hideAllPages();
+    document.getElementById('leaderboardPage').classList.remove('hidden');
+    updateLeaderboard();
+}
+
+function hideAllPages() {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.add('hidden');
+    });
+}
+
+// Start Quiz
+document.getElementById('startForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    gameState.username = document.getElementById('username').value;
+    gameState.difficulty = document.getElementById('difficulty').value;
+    gameState.category = document.getElementById('category').value;
+    
+    // Get questions based on category and difficulty
+    gameState.questions = getQuestionsForCategory(gameState.category, gameState.difficulty);
+    gameState.currentQuestion = 0;
+    gameState.score = 0;
+    gameState.answers = [];
+    showQuiz();
+});
+
+function getQuestionsForCategory(category, difficulty) {
+    if (category === 'all') {
+        let allQuestions = [];
+        Object.keys(quizData[difficulty]).forEach(cat => {
+            allQuestions = allQuestions.concat(quizData[difficulty][cat]);
+        });
+        return shuffleArray(allQuestions).slice(0, 5);
+    } else {
+        return quizData[difficulty][category] || [];
+    }
+}
+
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function startQuiz() {
+    gameState.startTime = Date.now();
+    loadQuestion();
+    startTimer();
+}
+
+function loadQuestion() {
+    const question = gameState.questions[gameState.currentQuestion];
+    document.getElementById('questionNumber').textContent = gameState.currentQuestion + 1;
+    document.getElementById('totalQuestions').textContent = gameState.questions.length;
+    document.getElementById('questionText').textContent = `${gameState.currentQuestion + 1}. ${question.question}`;
+    
+    const optionsContainer = document.getElementById('optionsContainer');
+    optionsContainer.innerHTML = '';
+    
+    question.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-outline-light w-100 mb-2 btn-option';
+        button.textContent = option;
+        button.onclick = () => selectAnswer(index);
+        optionsContainer.appendChild(button);
+    });
+    
+    updateProgress();
+    resetTimer();
+    playSound('question');
+}
+
+function selectAnswer(index) {
+    clearInterval(gameState.timer);
+    
+    const question = gameState.questions[gameState.currentQuestion];
+    const buttons = document.querySelectorAll('.btn-option');
+    
+    buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === question.correct) {
+            btn.classList.add('correct');
+        } else if (i === index && i !== question.correct) {
+            btn.classList.add('incorrect');
+        }
+    });
+    
+    if (index === question.correct) {
+        gameState.score++;
+        playSound('correct');
+    } else {
+        playSound('incorrect');
+    }
+    
+    gameState.answers.push(index);
+    
+    // Show explanation if available
+    if (question.explanation) {
+        setTimeout(() => {
+            showExplanation(question.explanation);
+        }, 500);
+    }
+    
+    setTimeout(() => {
+        gameState.currentQuestion++;
+        if (gameState.currentQuestion < gameState.questions.length) {
+            loadQuestion();
+        } else {
+            endQuiz();
+        }
+    }, 2500);
+}
+
+function showExplanation(explanation) {
+    const explanationDiv = document.createElement('div');
+    explanationDiv.className = 'alert alert-info mt-3';
+    explanationDiv.innerHTML = `<i class="bi bi-info-circle"></i> ${explanation}`;
+    document.getElementById('quizForm').appendChild(explanationDiv);
+}
+
+function startTimer() {
+    gameState.timeLeft = 15;
+    updateTimerDisplay();
+    
+    gameState.timer = setInterval(() => {
+        gameState.timeLeft--;
+        updateTimerDisplay();
+        
+        if (gameState.timeLeft <= 0) {
+            clearInterval(gameState.timer);
+            selectAnswer(-1); // Time's up
+        }
+    }, 1000);
+}
+
+function resetTimer() {
+    clearInterval(gameState.timer);
+    startTimer();
+}
+
+function updateTimerDisplay() {
+    document.getElementById('timer').textContent = `⏱ ${gameState.timeLeft}`;
+}
+
+function updateProgress() {
+    const progress = ((gameState.currentQuestion + 1) / gameState.questions.length) * 100;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+}
+
+function endQuiz() {
+    clearInterval(gameState.timer);
+    checkAchievements();
+    saveScore();
+    showResult();
+}
+
+function checkAchievements() {
+    const totalTime = Math.floor((Date.now() - gameState.startTime) / 1000);
+    const percentage = Math.round((gameState.score / gameState.questions.length) * 100);
+    
+    // First Quiz
+    if (!gameState.userAchievements.firstQuiz) {
+        unlockAchievement('firstQuiz');
+    }
+    
+    // Perfect Score
+    if (percentage === 100 && !gameState.userAchievements.perfectScore) {
+        unlockAchievement('perfectScore');
+    }
+    
+    // Speed Demon
+    if (totalTime < 30 && !gameState.userAchievements.speedDemon) {
+        unlockAchievement('speedDemon');
+    }
+    
+    // Hard Mode
+    if (gameState.difficulty === 'hard' && !gameState.userAchievements.hardMode) {
+        unlockAchievement('hardMode');
+    }
+    
+    // Category achievements
+    if (gameState.category !== 'all') {
+        const categoryKey = gameState.category;
+        const categoryAchievements = {
+            science: 'scientist',
+            history: 'historian', 
+            geography: 'explorer',
+            sports: 'athlete',
+            entertainment: 'entertainer'
+        };
+        
+        const achievementKey = categoryAchievements[categoryKey];
+        if (achievementKey) {
+            const count = getCategoryQuizCount(categoryKey);
+            if (count >= 5 && !gameState.userAchievements[achievementKey]) {
+                unlockAchievement(achievementKey);
+            }
+        }
+    }
+    
+    // Quiz Master
+    const totalQuizzes = getTotalQuizCount();
+    if (totalQuizzes >= 10 && !gameState.userAchievements.quizMaster) {
+        unlockAchievement('quizMaster');
+    }
+}
+
+function unlockAchievement(achievementKey) {
+    gameState.userAchievements[achievementKey] = true;
+    localStorage.setItem('userAchievements', JSON.stringify(gameState.userAchievements));
+    
+    const achievement = achievements[achievementKey];
+    showNotification(`🎉 Achievement Unlocked: ${achievement.name}`, achievement.description);
+}
+
+function showNotification(title, message) {
+    const notification = document.createElement('div');
+    notification.className = 'position-fixed top-0 start-50 translate-middle-x mt-3 alert alert-success';
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `<strong>${title}</strong><br>${message}`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function getCategoryQuizCount(category) {
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    return scores.filter(score => score.category === category).length;
+}
+
+function getTotalQuizCount() {
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    return scores.length;
+}
+
+function displayAchievements() {
+    const container = document.getElementById('userAchievements');
+    container.innerHTML = '';
+    
+    Object.keys(gameState.userAchievements).forEach(key => {
+        if (gameState.userAchievements[key] && achievements[key]) {
+            const badge = document.createElement('span');
+            badge.className = 'achievement-badge';
+            badge.title = achievements[key].description;
+            badge.textContent = achievements[key].name;
+            container.appendChild(badge);
+        }
+    });
+    
+    if (Object.keys(gameState.userAchievements).filter(key => gameState.userAchievements[key]).length === 0) {
+        container.innerHTML = '<small class="text-muted">No achievements yet. Start playing!</small>';
+    }
+}
+
+function displayResults() {
+    const totalTime = Math.floor((Date.now() - gameState.startTime) / 1000);
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
+    
+    document.getElementById('finalScore').textContent = `${gameState.score}/${gameState.questions.length}`;
+    document.getElementById('resultUser').textContent = gameState.username;
+    document.getElementById('resultTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    document.getElementById('resultDifficulty').textContent = gameState.difficulty.charAt(0).toUpperCase() + gameState.difficulty.slice(1);
+}
+
+// Leaderboard
+function saveScore() {
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    const totalTime = Math.floor((Date.now() - gameState.startTime) / 1000);
+    
+    scores.push({
+        username: gameState.username,
+        score: gameState.score,
+        total: gameState.questions.length,
+        difficulty: gameState.difficulty,
+        category: gameState.category,
+        time: totalTime,
+        date: new Date().toISOString()
+    });
+    
+    scores.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.time - b.time;
+    });
+    
+    localStorage.setItem('quizScores', JSON.stringify(scores.slice(0, 100))); // Keep top 100
+}
+
+function loadLeaderboard() {
+    updateLeaderboard();
+}
+
+function updateLeaderboard() {
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    const filter = document.getElementById('leaderboardFilter').value;
+    
+    let filteredScores = scores;
+    if (filter !== 'all') {
+        filteredScores = scores.filter(score => score.difficulty === filter);
+    }
+    
+    const tbody = document.getElementById('leaderboardBody');
+    tbody.innerHTML = '';
+    
+    filteredScores.slice(0, 10).forEach((score, index) => {
+        const row = tbody.insertRow();
+        const minutes = Math.floor(score.time / 60);
+        const seconds = score.time % 60;
+        const date = new Date(score.date).toLocaleDateString();
+        
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${score.username}</td>
+            <td>${score.score}/${score.total}</td>
+            <td>${score.difficulty.charAt(0).toUpperCase() + score.difficulty.slice(1)}</td>
+            <td>${minutes}:${seconds.toString().padStart(2, '0')}</td>
+            <td>${date}</td>
+        `;
+    });
+    
+    if (filteredScores.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No scores yet</td></tr>';
+    }
+}
+
+// Certificate
+function downloadCertificate() {
+    const totalTime = Math.floor((Date.now() - gameState.startTime) / 1000);
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
+    const percentage = Math.round((gameState.score / gameState.questions.length) * 100);
+    
+    const text = `╔════════════════════════════════════════╗
+║         QUIZ CERTIFICATE               ║
+║                                        ║
+║  This certifies that                  ║
+║                                        ║
+║  ${gameState.username.padEnd(35)} ║
+║                                        ║
+║  has successfully completed            ║
+║  a QuizVerse Challenge!               ║
+║                                        ║
+║  Score: ${gameState.score}/${gameState.questions.length} (${percentage}%)${' '.repeat(20 - `${gameState.score}/${gameState.questions.length} (${percentage}%)`.length)}║
+║  Difficulty: ${gameState.difficulty.toUpperCase().padEnd(20)} ║
+║  Category: ${(gameState.category === 'all' ? 'Mixed' : gameState.category.charAt(0).toUpperCase() + gameState.category.slice(1)).padEnd(20)} ║
+║  Time: ${minutes}:${seconds.toString().padStart(2, '0')}${' '.repeat(25 - `${minutes}:${seconds.toString().padStart(2, '0')}`.length)}║
+║  Date: ${new Date().toLocaleDateString().padEnd(25)} ║
+║                                        ║
+║  Keep up the great work!              ║
+║                                        ║
+╚════════════════════════════════════════╝`;
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quiz-certificate-${Date.now()}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    playSound('complete');
+}
+</script>
+
+</body>
+</html>

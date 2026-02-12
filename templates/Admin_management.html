@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Admin Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; min-height: 100vh; }
+        .admin-container { max-width: 1400px; margin: 0 auto; padding: 20px; display: flex; gap: 20px; }
+        .sidebar { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 280px; height: fit-content; }
+        .nav-item { display: block; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; transition: all 0.3s; color: #fff; text-decoration: none; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
+        .nav-item.active { background: rgba(255,255,255,0.2); border-left-color: #007bff; }
+        .main-content { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 30px; flex: 1; }
+        .content-section { display: none; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: transform 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .management-section { background: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .section-title { color: #333; margin-bottom: 20px; font-size: 1.5rem; font-weight: 600; }
+        .user-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .user-card { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .user-info h5 { margin: 0 0 10px 0; color: #333; }
+        .user-info p { margin: 5px 0; color: #666; font-size: 0.9rem; }
+        .user-actions { display: flex; gap: 8px; }
+        .btn-sm { padding: 6px 12px; font-size: 0.875rem; border-radius: 6px; }
+        .form-control { border-radius: 8px; border: 1px solid #ced4da; padding: 10px; width: 100%; }
+        .form-control:focus { border-color: #007bff; box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25); }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #007bff; }
+        .alert-success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .alert-danger { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        @media (max-width: 768px) { .admin-container { flex-direction: column; } .sidebar { width: 100%; height: auto; } }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <h4 style="color: white; margin-bottom: 30px;">🔧 Admin Panel</h4>
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</a>
+            <a href="#" class="nav-item" onclick="showSection('users')">👥 User Management</a>
+            <a href="#" class="nav-item" onclick="showSection('content')">📁 Content Management</a>
+            <a href="#" class="nav-item" onclick="showSection('analytics')">📈 Analytics</a>
+            <a href="#" class="nav-item" onclick="showSection('security')">🛡️ Security</a>
+            <a href="#" class="nav-item" onclick="showSection('system')">⚙️ System Settings</a>
+            <a href="#" class="nav-item" onclick="showSection('logs')">📝 System Logs</a>
+            <a href="#" class="nav-item" onclick="showSection('backup')">💾 Backup & Restore</a>
+            <a href="#" class="nav-item" onclick="logout()">🚪 Logout</a>
+        </div>
+        
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section active">
+                <h2 class="section-title">📊 System Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>👥</h3><h4 id="totalUsers">0</h4><p>Total Users</p></div>
+                    <div class="stat-card"><h3>❓</h3><h4 id="totalQuestions">0</h4><p>Total Questions</p></div>
+                    <div class="stat-card"><h3>🎯</h3><h4 id="totalAttempts">0</h4><p>Total Attempts</p></div>
+                    <div class="stat-card"><h3>📈</h3><h4 id="avgScore">0%</h4><p>Average Score</p></div>
+                </div>
+            </div>
+            
+            <!-- User Management Section -->
+            <div id="users" class="content-section">
+                <h2 class="section-title">👥 User Management</h2>
+                <div class="management-section">
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search users..." style="width: 100%; max-width: 400px;">
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-primary" onclick="addUser()">➕ Add User</button>
+                            <button class="btn btn-success" onclick="exportUsers()">📥 Export Users</button>
+                            <button class="btn btn-warning" onclick="importUsers()">📥 Import Users</button>
+                        </div>
+                    </div>
+                    <div class="user-grid" id="usersList"></div>
+                </div>
+            </div>
+            
+            <!-- Content Management Section -->
+            <div id="content" class="content-section">
+                <h2 class="section-title">📁 Content Management</h2>
+                <div class="management-section">
+                    <div class="stats-grid">
+                        <div class="stat-card"><h3>❓</h3><h4 id="questionCount">0</h4><p>Questions</p><button class="btn btn-sm btn-primary" onclick="manageQuestions()" style="margin-top: 10px;">Manage</button></div>
+                        <div class="stat-card"><h3>🏷️</h3><h4 id="categoryCount">0</h4><p>Categories</p><button class="btn btn-sm btn-primary" onclick="manageCategories()" style="margin-top: 10px;">Manage</button></div>
+                        <div class="stat-card"><h3>🖼️</h3><h4 id="mediaCount">0</h4><p>Media Files</p><button class="btn btn-sm btn-primary" onclick="manageMedia()" style="margin-top: 10px;">Manage</button></div>
+                        <div class="stat-card"><h3>📄</h3><h4 id="templateCount">0</h4><p>Templates</p><button class="btn btn-sm btn-primary" onclick="manageTemplates()" style="margin-top: 10px;">Manage</button></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Section -->
+            <div id="analytics" class="content-section">
+                <h2 class="section-title">📈 Analytics</h2>
+                <div class="management-section">
+                    <canvas id="analyticsChart" width="400" height="200" style="max-width: 100%;"></canvas>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="generateReport()">📊 Generate Report</button>
+                        <button class="btn btn-success" onclick="refreshAnalytics()">🔄 Refresh Data</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Section -->
+            <div id="security" class="content-section">
+                <h2 class="section-title">🛡️ Security</h2>
+                <div class="management-section">
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">IP Whitelist:</label>
+                        <textarea class="form-control" id="ipWhitelist" rows="4" placeholder="Enter IP addresses (one per line)" style="width: 100%;"></textarea>
+                        <button class="btn btn-primary" onclick="updateWhitelist()" style="margin-top: 10px;">Update Whitelist</button>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">Failed Login Attempts:</label>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px;"><span id="failedAttempts">5 attempts in last hour</span></div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">Active Sessions:</label>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px;"><span id="activeSessions">45 active sessions</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Settings Section -->
+            <div id="system" class="content-section">
+                <h2 class="section-title">⚙️ System Settings</h2>
+                <div class="management-section">
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">System Name:</label>
+                        <input type="text" class="form-control" id="systemName" value="Quiz Management System" style="width: 100%;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">Admin Username:</label>
+                        <input type="text" class="form-control" id="adminUsername" value="admin" style="width: 100%;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="color: white; font-weight: 500;">Maintenance Mode:</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="maintenanceMode">
+                            <label style="color: white; margin: 0;">Enable Maintenance</label>
+                            <button class="btn btn-warning" onclick="toggleMaintenance()">Toggle</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+                        <button class="btn btn-danger" onclick="resetSettings()">🔄 Reset to Defaults</button>
+                        <button class="btn btn-success" onclick="restartSystem()">🔄 Restart System</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Logs Section -->
+            <div id="logs" class="content-section">
+                <h2 class="section-title">📝 System Logs</h2>
+                <div class="management-section">
+                    <div id="logsList" style="max-height: 400px; overflow-y: auto; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;"></div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="refreshLogs()">🔄 Refresh Logs</button>
+                        <button class="btn btn-danger" onclick="clearLogs()">🗑️ Clear Logs</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Backup Section -->
+            <div id="backup" class="content-section">
+                <h2 class="section-title">💾 Backup & Restore</h2>
+                <div class="management-section">
+                    <div class="stats-grid">
+                        <div class="stat-card"><h3>💾</h3><h4 id="backupCount">0</h4><p>Available Backups</p><button class="btn btn-sm btn-primary" onclick="createBackup()" style="margin-top: 10px;">Create Backup</button></div>
+                        <div class="stat-card"><h3>📅</h3><h4 id="lastBackup">Never</h4><p>Last Backup</p><button class="btn btn-sm btn-warning" onclick="restoreBackup()" style="margin-top: 10px;">Restore Backup</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+    
+    <script>
+        // Advanced Admin Management System
+        let currentSection = 'dashboard';
+        let users = [
+            {id: 1, username: 'admin', role: 'admin', status: 'active'},
+            {id: 2, username: 'john_doe', role: 'user', status: 'active'},
+            {id: 3, username: 'jane_smith', role: 'moderator', status: 'active'}
+        ];
+        
+        function showSection(sectionId) {
+            currentSection = sectionId;
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'error' ? 'danger' : 'success'}`;
+            alertDiv.innerHTML = `${message} <button onclick="this.parentElement.remove()" style="background:none;border:none;color:inherit;cursor:pointer;margin-left:10px;">×</button>`;
+            alertContainer.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+        
+        function loadUsers() {
+            const container = document.getElementById('usersList');
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const filteredUsers = users.filter(user => 
+                user.username.toLowerCase().includes(searchTerm)
+            );
+            
+            container.innerHTML = filteredUsers.map(user => `
+                <div class="user-card">
+                    <div class="user-info">
+                        <h5>${user.username}</h5>
+                        <p>Role: ${user.role} | Status: ${user.status}</p>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn btn-sm btn-primary" onclick="editUser(${user.id})">Edit</button>
+                        <button class="btn btn-sm btn-warning" onclick="resetPassword(${user.id})">Reset</button>
+                        <button class="btn btn-sm btn-danger" onclick="banUser(${user.id})">Ban</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function addUser() {
+            const username = prompt('Enter username:');
+            if (username) {
+                users.push({id: Date.now(), username, role: 'user', status: 'active'});
+                loadUsers();
+                showAlert('User added successfully!', 'success');
+            }
+        }
+        
+        function exportUsers() { showAlert('Users exported successfully!', 'success'); }
+        function importUsers() { showAlert('Users imported successfully!', 'success'); }
+        function editUser(userId) { showAlert(`Editing user ${userId}`, 'info'); }
+        function resetPassword(userId) { showAlert(`Password reset for user ${userId}`, 'success'); }
+        function banUser(userId) { if (confirm('Ban this user?')) { users = users.filter(u => u.id !== userId); loadUsers(); showAlert('User banned successfully!', 'success'); } }
+        function manageQuestions() { showAlert('Opening question manager...', 'info'); }
+        function manageCategories() { showAlert('Opening category manager...', 'info'); }
+        function manageMedia() { showAlert('Opening media manager...', 'info'); }
+        function manageTemplates() { showAlert('Opening template manager...', 'info'); }
+        function generateReport() { showAlert('Generating report...', 'info'); }
+        function refreshAnalytics() { showAlert('Analytics data refreshed!', 'success'); }
+        function updateWhitelist() { showAlert('IP whitelist updated!', 'success'); }
+        function toggleMaintenance() { const isEnabled = document.getElementById('maintenanceMode').checked; showAlert(`Maintenance mode ${isEnabled ? 'enabled' : 'disabled'}!`, 'info'); }
+        function saveSettings() { showAlert('System settings saved!', 'success'); }
+        function resetSettings() { if (confirm('Reset all settings to defaults?')) { document.getElementById('systemName').value = 'Quiz Management System'; document.getElementById('adminUsername').value = 'admin'; document.getElementById('maintenanceMode').checked = false; showAlert('Settings reset to defaults!', 'success'); } }
+        function restartSystem() { if (confirm('Restart the system?')) { showAlert('System restarting...', 'info'); setTimeout(() => location.reload(), 2000); } }
+        
+        function refreshLogs() {
+            const logs = [
+                {timestamp: new Date().toISOString(), level: 'info', message: 'System initialized successfully'},
+                {timestamp: new Date().toISOString(), level: 'warning', message: 'High CPU usage detected: 85%'},
+                {timestamp: new Date().toISOString(), level: 'error', message: 'Database connection failed'}
+            ];
+            
+            const container = document.getElementById('logsList');
+            container.innerHTML = logs.map(log => `
+                <div style="padding: 10px; margin-bottom: 10px; border-left: 3px solid ${log.level === 'error' ? '#dc3545' : log.level === 'warning' ? '#ffc107' : '#007bff'};">
+                    <strong>${log.timestamp}</strong><br>
+                    <small>${log.level.toUpperCase()}</small><br>
+                    ${log.message}
+                </div>
+            `).join('');
+            
+            showAlert('Logs refreshed!', 'success');
+        }
+        
+        function clearLogs() { if (confirm('Clear all system logs?')) { document.getElementById('logsList').innerHTML = ''; showAlert('System logs cleared!', 'success'); } }
+        function createBackup() { const timestamp = new Date().toISOString().replace(/[:.]/g, '-'); showAlert(`Backup created: backup_${timestamp}.db`, 'success'); document.getElementById('backupCount').textContent = '1'; document.getElementById('lastBackup').textContent = 'Just now'; }
+        function restoreBackup() { showAlert('Backup restored successfully!', 'success'); }
+        function logout() { if (confirm('Logout from admin panel?')) { window.location.href = '/login'; } }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalQuestions').textContent = '50';
+            document.getElementById('totalAttempts').textContent = '1,234';
+            document.getElementById('avgScore').textContent = '78.5%';
+            document.getElementById('questionCount').textContent = '50';
+            document.getElementById('categoryCount').textContent = '8';
+            document.getElementById('mediaCount').textContent = '25';
+            document.getElementById('templateCount').textContent = '3';
+        });
+    </script>
+</body>
+</html>
