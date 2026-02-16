@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizVerse - Premium Certificate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cinzel:wght@400;600&family=Poppins:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gold: #FFD700;
+            --secondary-gold: #FFA500;
+            --dark-gold: #B8860B;
+            --light-gold: #FFF8DC;
+            --brand-blue: #1e3a8a;
+            --text-dark: #1a202c;
+            --text-gray: #4a5568;
+            --bg-cream: #FFF8E7;
+            --shadow-luxury: rgba(0,0,0,0.15);
+            --neon-purple: #8B5CF6;
+            --neon-pink: #EC4899;
+            --neon-blue: #3B82F6;
+            --neon-cyan: #06B6D4;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Super Cool Certificate Container */
+        .certificate-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%),
+                linear-gradient(45deg, rgba(255,215,0,0.1) 0%, transparent 100%);
+            border-radius: 32px;
+            box-shadow: 
+                0 50px 100px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,215,0,0.2),
+                inset 0 0 50px rgba(255,215,0,0.05);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transform: perspective(1000px) rotateX(2deg);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .certificate-wrapper:hover {
+            transform: perspective(1000px) rotateX(0deg) scale(1.02);
+            box-shadow: 
+                0 60px 120px rgba(0,0,0,0.4),
+                0 0 0 2px rgba(255,215,0,0.3),
+                inset 0 0 60px rgba(255,215,0,0.1);
+        }
+        
+        /* Holographic Border Effect */
+        .certificate-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+            padding: 3px;
+            background: linear-gradient(
+                45deg,
+                var(--neon-purple) 0%,
+                var(--neon-pink) 25%,
+                var(--primary-gold) 50%,
+                var(--neon-blue) 75%,
+                var(--neon-cyan) 100%
+            );
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: holographic 3s ease-in-out infinite;
+        }
+        
+        @keyframes holographic {
+            0%, 100% { 
+                background-position: 0% 50%;
+                filter: hue-rotate(0deg);
+            }
+            50% { 
+                background-position: 100% 50%;
+                filter: hue-rotate(30deg);
+            }
+        }
+        
+        /* Decorative Corner Elements */
+        .corner-ornament {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--primary-gold);
+            opacity: 0.8;
+        }
+        
+        .corner-ornament::before,
+        .corner-ornament::after {
+            content: '';
+            position: absolute;
+            background: var(--primary-gold);
+        }
+        
+        .corner-ornament.top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .corner-ornament.top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .corner-ornament.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .corner-ornament.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        /* Premium Background Pattern */
+        .certificate-background {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 30px, var(--primary-gold) 30px, var(--primary-gold) 60px),
+                repeating-linear-gradient(-45deg, transparent, transparent 30px, var(--primary-gold) 30px, var(--primary-gold) 60px),
+                radial-gradient(circle at 20% 80%, var(--primary-gold) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--primary-gold) 0%, transparent 50%);
+        }
+        
+        /* Watermark Logo */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 180px;
+            opacity: 0.04;
+            font-family: 'Bebas Neue', cursive;
+            color: var(--primary-gold);
+            font-weight: 900;
+            pointer-events: none;
+        }
+        
+        /* Certificate Content */
+        .certificate-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+        }
+        
+        /* Header Section */
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .organization-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--neon-purple), var(--neon-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 42px;
+            color: white;
+            box-shadow: 
+                0 15px 35px rgba(255,215,0,0.4),
+                0 0 50px rgba(139, 92, 246, 0.3),
+                inset 0 0 20px rgba(255,255,255,0.2);
+            position: relative;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        
+        .organization-logo::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-gold), var(--neon-purple), var(--neon-pink), var(--primary-gold));
+            -webkit-mask: radial-gradient(circle, transparent 60%, black 60%);
+            mask: radial-gradient(circle, transparent 60%, black 60%);
+            animation: logoRotate 4s linear infinite;
+        }
+        
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .certificate-title {
+            font-family: 'Cinzel', serif;
+            font-size: 64px;
+            font-weight: 700;
+            background: linear-gradient(
+                135deg,
+                var(--text-dark) 0%,
+                var(--primary-gold) 25%,
+                var(--neon-purple) 50%,
+                var(--primary-gold) 75%,
+                var(--text-dark) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+            animation: titleShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .certificate-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--text-gray);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .tagline {
+            font-size: 14px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+        
+        /* Decorative Divider */
+        .luxury-divider {
+            width: 70%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+            margin: 30px auto;
+            position: relative;
+        }
+        
+        .luxury-divider::before,
+        .luxury-divider::after {
+            content: '❦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-gold);
+            font-size: 20px;
+        }
+        
+        .luxury-divider::before {
+            left: -30px;
+        }
+        
+        .luxury-divider::after {
+            right: -30px;
+        }
+        
+        /* Main Content */
+        .certificate-body {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .certification-text {
+            font-size: 22px;
+            color: var(--text-gray);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .recipient-name {
+            font-family: 'Cinzel', serif;
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(
+                135deg,
+                var(--text-dark) 0%,
+                var(--primary-gold) 50%,
+                var(--neon-purple) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0;
+            padding: 20px 50px;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            display: inline-block;
+            position: relative;
+            text-shadow: 0 0 20px rgba(255,215,0,0.2);
+        }
+        
+        .recipient-name::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--neon-purple),
+                var(--primary-gold),
+                var(--neon-pink),
+                transparent
+            );
+            border-radius: 2px;
+            animation: nameUnderline 2s ease-in-out infinite;
+        }
+        
+        @keyframes nameUnderline {
+            0%, 100% { width: 80%; opacity: 0.7; }
+            50% { width: 100%; opacity: 1; }
+        }
+        
+        .achievement-statement {
+            font-size: 24px;
+            color: var(--brand-blue);
+            font-weight: 600;
+            margin: 25px 0;
+            line-height: 1.4;
+        }
+        
+        /* Advanced Details Grid */
+        .certificate-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bg-cream), #ffffff);
+            border-radius: 16px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+        
+        .detail-card {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,215,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .detail-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .detail-icon {
+            font-size: 28px;
+            color: var(--primary-gold);
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .detail-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        /* Security & Verification Section */
+        .verification-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 16px;
+            border: 1px solid rgba(255,215,0,0.1);
+        }
+        
+        .certificate-id {
+            text-align: left;
+        }
+        
+        .id-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .id-number {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 2px;
+        }
+        
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+        
+        /* Footer Section */
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,215,0,0.2);
+        }
+        
+        .signature-section {
+            text-align: left;
+        }
+        
+        .signature-line {
+            width: 250px;
+            height: 2px;
+            background: var(--text-dark);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .signature-line::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--primary-gold);
+        }
+        
+        .signature-title {
+            font-size: 14px;
+            color: var(--text-gray);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .signature-name {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .signature-id {
+            font-size: 12px;
+            color: var(--text-gray);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .date-section {
+            text-align: right;
+        }
+        
+        .date-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .date-value {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        /* Premium Seal */
+        .premium-seal {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+            border: 4px solid var(--light-gold);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-seal::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-premium {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        
+        .btn-premium:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(39,174,96,0.4);
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-print:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(52,152,219,0.4);
+        }
+        
+        .btn-share {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .btn-share:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(231,76,60,0.4);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, var(--text-gray), #2c3e50);
+            color: white;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(44,62,80,0.4);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .certificate-content {
+                padding: 40px 30px;
+            }
+            
+            .certificate-title {
+                font-size: 36px;
+            }
+            
+            .recipient-name {
+                font-size: 32px;
+            }
+            
+            .certificate-details {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .verification-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .certificate-footer {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+            }
+            
+            .premium-seal {
+                position: static;
+                margin: 30px auto 0;
+            }
+        }
+        
+        /* Print Optimization */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .certificate-wrapper {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+            }
+            
+            .action-buttons {
+                display: none;
+            }
+            
+            .certificate-content {
+                padding: 40px 60px;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--primary-gold);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="certificate-wrapper">
+        <!-- Advanced Border -->
+        <div class="certificate-border"></div>
+        
+        <!-- Decorative Corners -->
+        <div class="corner-ornament top-left"></div>
+        <div class="corner-ornament top-right"></div>
+        <div class="corner-ornament bottom-left"></div>
+        <div class="corner-ornament bottom-right"></div>
+        
+        <!-- Background Elements -->
+        <div class="certificate-background"></div>
+        <div class="watermark">QUIZVERSE</div>
+        
+        <!-- Main Certificate Content -->
+        <div class="certificate-content">
+            <!-- Header -->
+            <div class="certificate-header">
+                <div class="organization-logo">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <h1 class="certificate-title">Certificate of Achievement</h1>
+                <p class="certificate-subtitle">This is to certify that</p>
+                <p class="tagline">Excellence in Knowledge & Performance</p>
+            </div>
+            
+            <!-- Decorative Divider -->
+            <div class="luxury-divider"></div>
+            
+            <!-- Main Content -->
+            <div class="certificate-body">
+                <p class="certification-text">
+                    <strong id="userName">STUDENT NAME</strong> has successfully demonstrated exceptional knowledge and skill by completing the
+                </p>
+                
+                <div class="recipient-name" id="recipientName">STUDENT NAME</div>
+                
+                <div class="achievement-statement" id="achievementStatement">
+                    QuizVerse Challenge with Outstanding Performance
+                </div>
+                
+                <!-- Advanced Details Grid -->
+                <div class="certificate-details">
+                    <div class="detail-card">
+                        <div class="detail-icon">🎯</div>
+                        <div class="detail-label">Score Achieved</div>
+                        <div class="detail-value" id="scoreDisplay">0/0</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">📊</div>
+                        <div class="detail-label">Accuracy</div>
+                        <div class="detail-value" id="accuracyDisplay">0%</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">🏆</div>
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value" id="difficultyDisplay">Easy</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">⏱️</div>
+                        <div class="detail-label">Time Taken</div>
+                        <div class="detail-value" id="timeDisplay">0s</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">📚</div>
+                        <div class="detail-label">Course</div>
+                        <div class="detail-value">QuizVerse</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">⭐</div>
+                        <div class="detail-label">Grade</div>
+                        <div class="detail-value" id="gradeDisplay">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security & Verification Section -->
+            <div class="verification-section">
+                <div class="certificate-id">
+                    <div class="id-label">Certificate ID</div>
+                    <div class="id-number" id="certificateId">QV-2026-XXXXXX</div>
+                    <div class="id-label" style="margin-top: 8px;">Issue Date & Time</div>
+                    <div class="id-number" id="issueDateTime">Jan 1, 2026 - 12:00 PM</div>
+                </div>
+                <div class="qr-code" id="qrCode">
+                    <!-- QR Code will be generated here -->
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="certificate-footer">
+                <div class="signature-section">
+                    <div class="signature-line"></div>
+                    <div class="signature-title">Authorized Signatory</div>
+                    <div class="signature-name">Quiz Master</div>
+                    <div class="signature-id">ID: QM-2026-001</div>
+                </div>
+                
+                <div class="date-section">
+                    <div class="date-label">Date of Issue</div>
+                    <div class="date-value" id="dateOfIssue">January 1, 2026</div>
+                </div>
+            </div>
+            
+            <!-- Premium Seal -->
+            <div class="premium-seal">
+                <i class="bi bi-award-fill"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="btn-premium btn-download" onclick="downloadAsPDF()">
+            <i class="bi bi-file-earmark-pdf"></i> Download PDF
+        </button>
+        <button class="btn-premium btn-print" onclick="printCertificate()">
+            <i class="bi bi-printer"></i> Print Certificate
+        </button>
+        <button class="btn-premium btn-share" onclick="shareCertificate()">
+            <i class="bi bi-share"></i> Share
+        </button>
+        <button class="btn-premium btn-download" onclick="verifyCertificate()">
+            <i class="bi bi-shield-check"></i> Verify Online
+        </button>
+        <a href="result.html" class="btn-premium btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Results
+        </a>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        // Advanced Certificate Data System
+        let certificateData = {
+            username: 'Student',
+            score: 0,
+            total: 10,
+            accuracy: 0,
+            difficulty: 'Easy',
+            time: 0,
+            grade: '-',
+            certificateId: '',
+            issueDate: new Date(),
+            verificationUrl: '',
+            organization: {
+                name: 'QuizVerse',
+                logo: '🏆',
+                website: 'quizverse.com',
+                address: 'Global Learning Platform'
+            },
+            instructor: {
+                name: 'Quiz Master',
+                title: 'Authorized Signatory',
+                id: 'QM-2026-001'
+            }
+        };
+        
+        // Initialize Certificate with Advanced Features
+        function initializeCertificate() {
+            showLoading(true);
+            
+            try {
+                // Get data from multiple sources
+                const urlParams = new URLSearchParams(window.location.search);
+                const savedData = localStorage.getItem('certificateData');
+                const lastResults = localStorage.getItem('lastQuizResults');
+                
+                // Priority: URL params > saved data > last results > default
+                if (urlParams.has('username')) {
+                    loadFromURL(urlParams);
+                } else if (savedData) {
+                    certificateData = { ...certificateData, ...JSON.parse(savedData) };
+                } else if (lastResults) {
+                    loadFromResults(JSON.parse(lastResults));
+                }
+                
+                // Generate advanced certificate features
+                generateCertificateId();
+                generateVerificationUrl();
+                calculateGrade();
+                
+                // Update display
+                updateCertificateDisplay();
+                generateQRCode();
+                
+                // Store for verification
+                saveCertificateData();
+                
+            } catch (error) {
+                console.error('Error initializing certificate:', error);
+                showNotification('Error loading certificate data', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function loadFromURL(urlParams) {
+            certificateData.username = urlParams.get('username') || 'Student';
+            certificateData.score = parseInt(urlParams.get('score')) || 0;
+            certificateData.total = parseInt(urlParams.get('total')) || 10;
+            certificateData.accuracy = parseInt(urlParams.get('accuracy')) || 0;
+            certificateData.difficulty = urlParams.get('difficulty') || 'Easy';
+            certificateData.time = parseInt(urlParams.get('time')) || 0;
+        }
+        
+        function loadFromResults(results) {
+            certificateData = {
+                ...certificateData,
+                username: results.username || 'Student',
+                score: results.score || 0,
+                total: results.total || 10,
+                accuracy: results.accuracy || 0,
+                difficulty: results.difficulty || 'Easy',
+                time: results.time || 0
+            };
+        }
+        
+        function generateCertificateId() {
+            const timestamp = Date.now();
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            certificateData.certificateId = `QV-${new Date().getFullYear()}-${random}`;
+        }
+        
+        function generateVerificationUrl() {
+            const baseUrl = window.location.origin;
+            certificateData.verificationUrl = `${baseUrl}/verify?id=${certificateData.certificateId}`;
+        }
+        
+        function calculateGrade() {
+            const accuracy = certificateData.accuracy;
+            if (accuracy === 100) certificateData.grade = 'A+';
+            else if (accuracy >= 90) certificateData.grade = 'A';
+            else if (accuracy >= 80) certificateData.grade = 'B+';
+            else if (accuracy >= 70) certificateData.grade = 'B';
+            else if (accuracy >= 60) certificateData.grade = 'C';
+            else certificateData.grade = 'D';
+        }
+        
+        function updateCertificateDisplay() {
+            // Update basic info
+            document.getElementById('userName').textContent = certificateData.username.toUpperCase();
+            document.getElementById('recipientName').textContent = certificateData.username.toUpperCase();
+            document.getElementById('scoreDisplay').textContent = `${certificateData.score}/${certificateData.total}`;
+            document.getElementById('accuracyDisplay').textContent = `${certificateData.accuracy}%`;
+            document.getElementById('difficultyDisplay').textContent = certificateData.difficulty.charAt(0).toUpperCase() + certificateData.difficulty.slice(1);
+            document.getElementById('timeDisplay').textContent = `${certificateData.time}s`;
+            document.getElementById('gradeDisplay').textContent = certificateData.grade;
+            
+            // Update security features
+            document.getElementById('certificateId').textContent = certificateData.certificateId;
+            document.getElementById('dateOfIssue').textContent = certificateData.issueDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('issueDateTime').textContent = certificateData.issueDate.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Update achievement statement based on performance
+            const achievementStatement = document.getElementById('achievementStatement');
+            if (certificateData.accuracy === 100) {
+                achievementStatement.textContent = 'QuizVerse Challenge with PERFECT SCORE - Outstanding Achievement!';
+            } else if (certificateData.accuracy >= 90) {
+                achievementStatement.textContent = 'QuizVerse Challenge with EXCELLENCE - Top Performer!';
+            } else if (certificateData.accuracy >= 80) {
+                achievementStatement.textContent = 'QuizVerse Challenge with DISTINCTION - High Achiever!';
+            } else if (certificateData.accuracy >= 70) {
+                achievementStatement.textContent = 'QuizVerse Challenge with MERIT - Good Performance!';
+            } else {
+                achievementStatement.textContent = 'QuizVerse Challenge - Successfully Completed!';
+            }
+        }
+        
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = ''; // Clear previous QR code
+            
+            new QRCode(qrContainer, {
+                text: certificateData.verificationUrl,
+                width: 80,
+                height: 80,
+                colorDark: '#1a202c',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+        
+        function saveCertificateData() {
+            // Save to localStorage for verification
+            localStorage.setItem(`cert_${certificateData.certificateId}`, JSON.stringify(certificateData));
+            localStorage.setItem('certificateData', JSON.stringify(certificateData));
+        }
+        
+        // Advanced Action Functions
+        function downloadAsPDF() {
+            showLoading(true);
+            
+            const element = document.querySelector('.certificate-wrapper');
+            const opt = {
+                margin: 10,
+                filename: `QuizVerse_Certificate_${certificateData.username}_${certificateData.certificateId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'landscape'
+                },
+                pagebreak: { mode: 'avoid-all' }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showLoading(false);
+                showNotification('Certificate downloaded successfully!', 'success');
+            }).catch(error => {
+                showLoading(false);
+                showNotification('Error downloading PDF', 'error');
+                console.error('PDF generation error:', error);
+            });
+        }
+        
+        function printCertificate() {
+            window.print();
+            showNotification('Print dialog opened', 'info');
+        }
+        
+        function shareCertificate() {
+            const shareText = `🏆 I earned a certificate from QuizVerse! 
+Score: ${certificateData.score}/${certificateData.total} (${certificateData.accuracy}%)
+Certificate ID: ${certificateData.certificateId}
+Verify: ${certificateData.verificationUrl}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'QuizVerse Certificate of Achievement',
+                    text: shareText,
+                    url: certificateData.verificationUrl
+                }).then(() => {
+                    showNotification('Certificate shared successfully!', 'success');
+                }).catch(error => {
+                    console.log('Share cancelled');
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showNotification('Certificate details copied to clipboard!', 'success');
+                });
+            }
+        }
+        
+        function verifyCertificate() {
+            window.open(certificateData.verificationUrl, '_blank');
+        }
+        
+        // Utility Functions
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+            notification.style.zIndex = '10000';
+            notification.style.minWidth = '300px';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                    ${message}
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCertificate();
+            generateParticles();
+        });
+        
+        // Generate animated particles
+        function generateParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                
+                // Random colors
+                const colors = ['var(--primary-gold)', 'var(--neon-purple)', 'var(--neon-pink)', 'var(--neon-blue)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'p':
+                        e.preventDefault();
+                        printCertificate();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        downloadAsPDF();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
