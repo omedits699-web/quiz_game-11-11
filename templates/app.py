@@ -28,22 +28,22 @@ def admin_required(f):
 @app.route("/")
 def home():
     """Main home page with quiz interface"""
-    return send_file('templates/simple_home.html')
+    return render_template('simple_home.html')
 
 @app.route("/quiz")
 def quiz():
     """Quiz page"""
-    return send_file('quiz-app.html')
+    return render_template('quiz-app.html')
 
 @app.route("/result")
 def result():
     """Result page"""
-    return send_file('templates/result.html')
+    return render_template('result.html')
 
 @app.route("/leaderboard")
 def leaderboard():
     """Leaderboard page"""
-    return send_file('templates/admin_dashboard.html')
+    return render_template('admin_dashboard.html')
 
 # ==================== ADMIN ROUTES ====================
 
