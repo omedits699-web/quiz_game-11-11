@@ -680,9 +680,45 @@
         }
 
         // Question management functions
-        function showAddQuestionModal() {
-            alert('Add Question Modal - To be implemented');
+        async function showAddQuestionModal() {
+    const question = prompt("Enter the question:");
+    if (!question) return;
+
+    const option1 = prompt("Option 1:");
+    const option2 = prompt("Option 2:");
+    const option3 = prompt("Option 3:");
+    const option4 = prompt("Option 4:");
+    const correct = prompt("Enter the EXACT correct answer:");
+    const difficulty = prompt("Difficulty (easy / medium / hard):");
+
+    try {
+        const response = await fetch('/api/admin/questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                question: question,
+                options: [option1, option2, option3, option4],
+                correct: correct,
+                difficulty: difficulty
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert("Question added successfully!");
+            loadQuestions(); // refresh list
+        } else {
+            alert("Error: " + result.error);
         }
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong.");
+    }
+}
 
         function editQuestion(id) {
             alert('Edit Question ID: ' + id);
